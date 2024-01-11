@@ -1,0 +1,23 @@
+{
+  "name": "@eavid/vitest-tool",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "./dist/vitest_tool.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "exports": {
+    "reporter": "./dist/reporter.js",
+    "bench-ui": "./dist/bench_ui.js"
+  },
+  "peerDependencies": {
+    "vitest": "^1.1.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0"
+  }
+}

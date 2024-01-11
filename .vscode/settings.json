@@ -1,0 +1,4 @@
+{
+  "deno.config": "./ui/deno.json",
+  "deno.enablePaths": ["./ui", "./scripts"]
+}
