@@ -1,10 +1,8 @@
 {
   "name": "@eavid/vitest-tool",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "type": "module",
-  "types": "./dist/line_suite.d.ts",
-  "main": "./dist/line_suite.js",
   "scripts": {
     "ci:build": "node scripts/build.js"
   },
@@ -12,7 +10,8 @@
   "author": "",
   "license": "MIT",
   "exports": {
-    "reporter": "./dist/reporter.js"
+    ".": "./dist/line_suite.js",
+    "./reporter": "./dist/reporter.js"
   },
   "peerDependencies": {
     "vitest": "^1.1.3"

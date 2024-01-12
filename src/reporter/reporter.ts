@@ -25,7 +25,7 @@ function genGroupData(suite: Suite, nameKey: string, dimensions: Set<string>): D
 }
 
 const prefix = "\0line\0-";
-export default class CustomJsonReporter extends BenchmarkReportsMap.json {
+export class EChartsBenchmarkReporter extends BenchmarkReportsMap.json {
   async logTasks(files: File[]): Promise<void> {
     let fileDataList: ReportJSON = [];
     for (const file of files) {
