@@ -30,7 +30,8 @@ const { write } = await rollup({
 });
 
 console.log("rollup to " + output);
-
 await write({ dir: output });
 await fs.rename(path.resolve(output, "reporter/reporter.d.ts"), path.resolve(output, "reporter.d.ts"));
 await fs.rename(path.resolve(output, "vitest_tool/line_suite.d.ts"), path.resolve(output, "line_suite.d.ts"));
+console.log();
+console.log(await fs.readdir(output).then((list) => list.join("\n")));

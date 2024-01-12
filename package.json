@@ -1,6 +1,6 @@
 {
   "name": "@eavid/vitest-tool",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "type": "module",
   "types": "./dist/line_suite.d.ts",
@@ -26,5 +26,9 @@
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
     "access": "public"
-  }
+  },
+  "files": [
+    "dist/**/*.js",
+    "dist/**/*.d.ts"
+  ]
 }
