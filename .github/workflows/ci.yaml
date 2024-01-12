@@ -34,10 +34,10 @@ jobs:
         uses: asnowc/actions@deno-script/v1
         with:
           script: |
-            import { paseNewTagsFromOutput } from "https://cdn.jsdelivr.net/gh/dnpack/action-script@0.3.x/cmd/github_repo.ts";
+            import { tagsPublishFlow } from "https://cdn.jsdelivr.net/gh/dnpack/action-script@0.3.x/cmd/github_repo.ts";
             import { execCmdSync } from "https://cdn.jsdelivr.net/gh/dnpack/action-script@0.3.x/lib.ts";
 
-            await paseNewTagsFromOutput("NEW_TAG", () => execCmdSync("npm", ["publish"], { exitIfFail: true }));
+            await tagsPublishFlow("NEW_TAG", () => execCmdSync("npm", ["publish"], { exitIfFail: true }));
           args: -A --no-lock
         env:
           NEW_TAG: ${{steps.check_tag.outputs.tags}}
