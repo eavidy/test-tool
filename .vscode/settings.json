@@ -1,4 +1,4 @@
 {
-  "deno.config": "./ui/deno.json",
-  "deno.enablePaths": ["./ui", "./scripts"]
+  "deno.config": "./src/bench_ui/assets/deno.json",
+  "deno.enablePaths": ["./src/bench_ui/assets"]
 }

@@ -4,13 +4,15 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "ci:build": "node scripts/build.js"
+    "ci:build": "pnpm build:lib & pnpm  build:bench_ui",
+    "build:bench_ui": "node scripts/build_bench_ui.js",
+    "build:lib": "node scripts/build.js"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "exports": {
-    ".": "./dist/line_suite.js",
+    ".": "./dist/vitest_tool.js",
     "./reporter": "./dist/reporter.js"
   },
   "peerDependencies": {
@@ -20,7 +22,8 @@
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/node": "^20.11.0",
     "rollup": "^4.9.5",
-    "tslib": "^2.6.2"
+    "tslib": "^2.6.2",
+    "typescript": "^5.3.3"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
@@ -28,6 +31,7 @@
   },
   "files": [
     "dist/**/*.js",
-    "dist/**/*.d.ts"
+    "dist/**/*.d.ts",
+    "dist/bench_ui/assets/**"
   ]
 }

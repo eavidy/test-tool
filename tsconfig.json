@@ -12,6 +12,6 @@
     "baseUrl": "."
   },
 
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules", "src/bench_ui/assets"],
   "include": ["src"]
 }
