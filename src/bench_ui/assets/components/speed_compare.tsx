@@ -6,8 +6,13 @@ export type CompareItem = {
   time: number;
   samples: number[];
 };
-export function SpeedCompare(props: { source: DataSetItem[]; dimensions: string[]; title: string }) {
-  const { source, dimensions, title } = props;
+export function SpeedCompare(props: {
+  source: DataSetItem[];
+  chartType?: "line" | "bar";
+  dimensions: string[];
+  title: string;
+}) {
+  const { source, dimensions, title, chartType = "line" } = props;
   const compareChart = useMemo((): EChartsOption => {
     return {
       title: { text: title },
@@ -23,9 +28,9 @@ export function SpeedCompare(props: { source: DataSetItem[]; dimensions: string[
         dimensions: dimensions,
         source: source,
       },
-      series: dimensions.slice(1).map(() => ({ type: "line" })),
+      series: dimensions.slice(1).map(() => ({ type: chartType })),
     };
-  }, [source, dimensions]);
+  }, [source, dimensions, chartType]);
   return <ECharts option={compareChart} style={{ width: "100%", height: 400 }} />;
 }
 

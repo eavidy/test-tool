@@ -1,4 +1,4 @@
-import { File, Reporter, Suite, Task, Vitest } from "vitest";
+import type { File, Reporter, Suite, Task, Vitest } from "vitest";
 import { BenchmarkDataSet, DataSetItem, ReportJSON } from "./type.js";
 import path from "node:path";
 import { ReportUiServer } from "../bench.js";
