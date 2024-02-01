@@ -34,6 +34,10 @@ const { write } = await rollup({
   },
 });
 
+const importMap = path.resolve(inputDir, "deno.json");
+
+const importsMapText = await fs.readFile(importMap, "utf-8");
+const importsMap = JSON.stringify({ imports: JSON.parse(importsMapText).imports }, null, 2);
 const index = `<!DOCTYPE html>
 <html lang="en">
   <head>
@@ -43,23 +47,18 @@ const index = `<!DOCTYPE html>
   </head>
   <body>
     <div id="app"></div>
-    <script type="importmap" src="./import_map.json"></script>
+    <script type="importmap">${importsMap}</script>
     <script src="./main.js" type="module"></script>
   </body>
 </html>
 `;
 
 const indexHtml = path.resolve(output, "index.html");
-const importMap = path.resolve(output, "import_mpa.json");
 console.log();
 console.log(indexHtml);
-console.log(importMap);
 console.log();
 await fs.mkdir(output, { recursive: true });
-await Promise.all([
-  fs.writeFile(indexHtml, index, { flag: "w+" }),
-  fs.cp(path.resolve(inputDir, "import_map.json"), importMap),
-]);
+await fs.writeFile(indexHtml, index, { flag: "w+" });
 
 console.log("rollup to " + output);
 await write({ dir: output });

@@ -7,7 +7,7 @@ const output = "dist";
 // console.log("fetch ok");
 
 const { write } = await rollup({
-  input: ["./src/reporter.ts", "./src/vitest_tool.ts"],
+  input: ["./src/reporter.ts", "./src/vitest_tool.ts", "./src/bench.ts"],
   plugins: [
     tsPlugin({
       tslib: "none",

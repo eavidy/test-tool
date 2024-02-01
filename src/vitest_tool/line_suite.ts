@@ -1,15 +1,22 @@
 import { describe } from "vitest";
-export function lineSuite<T>(name: string, data: T[], suite: (item: T) => any, group?: (item: T) => string): void {
+export function lineSuite<T>(
+  name: string,
+  data: T[],
+  suite: (item: T) => any,
+  opts: {
+    type?: "line" | "bar";
+    group?: (item: T) => string;
+  } = {}
+): void {
+  const { group = String, type = "line" } = opts;
   describe(preFix + name, function () {
-    let suites = suite;
-    if (group) {
-      suites = function (item: T) {
-        describe(group(item), function () {
-          return suite(item);
-        });
-      };
-    }
+    let suites = function (item: T) {
+      describe(group(item), function () {
+        return suite(item);
+      });
+    };
+
     return Promise.all(data.map(suites)) as any;
   });
 }
-const preFix = "\0line\0-";
+const preFix = "\0chart\0-";

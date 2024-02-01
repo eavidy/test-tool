@@ -4,7 +4,7 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "ci:build": "pnpm build:lib & pnpm  build:bench_ui",
+    "ci:build": "pnpm build:lib && pnpm  build:bench_ui",
     "build:bench_ui": "node scripts/build_bench_ui.js",
     "build:lib": "node scripts/build.js"
   },
@@ -13,7 +13,8 @@
   "license": "MIT",
   "exports": {
     ".": "./dist/vitest_tool.js",
-    "./reporter": "./dist/reporter.js"
+    "./reporter": "./dist/reporter.js",
+    "./bench": "./dist/bench.js"
   },
   "peerDependencies": {
     "vitest": "^1.1.3"
@@ -33,5 +34,9 @@
     "dist/**/*.js",
     "dist/**/*.d.ts",
     "dist/bench_ui/assets/**"
-  ]
+  ],
+  "dependencies": {
+    "mime": "^4.0.1",
+    "tinybench": "^2.6.0"
+  }
 }

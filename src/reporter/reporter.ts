@@ -1,7 +1,7 @@
-import type { File, Suite, Task } from "vitest";
-import { BenchmarkReportsMap } from "vitest/reporters";
+import { File, Reporter, Suite, Task, Vitest } from "vitest";
 import { BenchmarkDataSet, DataSetItem, ReportJSON } from "./type.js";
 import path from "node:path";
+import { ReportUiServer } from "../bench.js";
 /** 每个测试的数据 */
 interface TargetData {
   testName: string;
@@ -24,23 +24,44 @@ function genGroupData(suite: Suite, nameKey: string, dimensions: Set<string>): D
   return series;
 }
 
-const prefix = "\0line\0-";
-export class EChartsBenchmarkReporter extends BenchmarkReportsMap.json {
-  async logTasks(files: File[]): Promise<void> {
+const prefix = "\0chart\0-";
+export class EChartsBenchmarkReporter implements Reporter {
+  constructor(private config: { writeJson?: string; server?: { port: number } } = {}) {
+    this.server = new ReportUiServer();
+  }
+  async onFinished(files: File[] = []): Promise<void> {
+    const fileDataList = this.genReportJSON(files!);
+    const data = Buffer.from(JSON.stringify(fileDataList));
+    this.server.updateBenchResult(data);
+    this.logServerAddress();
+  }
+
+  private server: ReportUiServer;
+  private ctx?: Vitest;
+  async onInit(ctx: Vitest) {
+    this.ctx = ctx;
+    const serverConfig = this.config.server;
+    if (serverConfig) await this.server.listen(serverConfig.port);
+  }
+  private logServerAddress() {
+    const serverConfig = this.config.server;
+    if (serverConfig)
+      console.log("Open the browser to view the benchmark results: http://localhost:" + serverConfig.port);
+  }
+  protected genReportJSON(files: File[]) {
     let fileDataList: ReportJSON = [];
     for (const file of files) {
       const fileData: BenchmarkDataSet[] = [];
       for (const suite of this.findLineSuite(file)) {
         fileData.push(this.genSuiteData(suite));
       }
-      this.ctx.config.root;
+      const root = this.ctx?.config.root;
       if (fileData.length) {
-        const relPath = path.relative(this.ctx.config.root, file.filepath);
+        const relPath = root ? path.relative(root, file.filepath) : file.filepath;
         fileDataList.push({ file: relPath, suiteData: fileData });
       }
     }
-    const str = JSON.stringify(fileDataList);
-    await this.writeReport(str);
+    return fileDataList;
   }
   private *findLineSuite(file: File): Generator<Suite> {
     for (const task of file.tasks) {
@@ -64,7 +85,7 @@ export class EChartsBenchmarkReporter extends BenchmarkReportsMap.json {
     for (const task of suite.tasks) {
       if (task.type === "suite") {
         source.push(genGroupData(task, groupNameKey, dimensions));
-      } else if (task.type === "test") {
+      } else if (task.type === "custom") {
         const data = genTargetData(task);
         if (!data) continue;
         directlyNested++;
