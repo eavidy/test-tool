@@ -14,8 +14,10 @@ export function BenchmarkPage() {
 
   return (
     <div>
-      {data.map(({ dimensions, source, title, chartType }) => {
-        return <SpeedCompare dimensions={dimensions} chartType={chartType} source={source} title={title} />;
+      {data.map(({ dimensions, source, yName, title, chartType }) => {
+        return (
+          <SpeedCompare dimensions={dimensions} yName={yName} chartType={chartType} source={source} title={title} />
+        );
       })}
     </div>
   );
@@ -23,6 +25,7 @@ export function BenchmarkPage() {
 type ReportJSON = { file: string; suiteData: BenchmarkDataSet[] }[];
 type BenchmarkDataSet = {
   title: string;
+  yName?: string;
   chartType?: "line" | "bar";
   dimensions: string[];
   source: DataSetItem[];

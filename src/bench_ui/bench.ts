@@ -30,16 +30,18 @@ class LineBench extends Bench {
 }
 export class LineSuite<T> {
   readonly benchList: LineBench[] = [];
+  private chartType: ChartType;
   constructor(
     readonly name: string,
     data: T[],
     suite: (data: T) => void,
     opts: Pick<Options, "time" | "iterations" | "now" | "warmupIterations" | "warmupTime"> & {
-      type?: "line" | "bar";
+      type?: ChartType;
       group?: (data: T) => string;
     } = {}
   ) {
-    const { type, group = String, ...benchOpts } = opts;
+    const { type = "line", group = String, ...benchOpts } = opts;
+    this.chartType = type;
     for (let i = 0; i < data.length; i++) {
       benchInstance = new LineBench({ groupName: group(data[i]) }, benchOpts);
       this.benchList[i] = benchInstance;
@@ -52,11 +54,11 @@ export class LineSuite<T> {
       await item.warmup();
       await item.run();
     }
-    return this.genBenchDataSet(this, "line");
+    return this.genBenchDataSet(this, this.chartType, "ms");
   }
-  private genBenchDataSet(benchList: LineSuite<any>, chartType: ChartType): BenchmarkDataSet {
+  private genBenchDataSet(benchList: LineSuite<any>, chartType: ChartType, yName?: string): BenchmarkDataSet {
     const gName = "groupName";
-    const res: BenchmarkDataSet = { title: benchList.name, chartType, dimensions: [gName], source: [] };
+    const res: BenchmarkDataSet = { yName, title: benchList.name, chartType, dimensions: [gName], source: [] };
     const bench0 = benchList.benchList[0];
     if (!bench0) return res;
     for (const { name } of bench0.tasks) {
