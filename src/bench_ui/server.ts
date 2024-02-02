@@ -28,7 +28,7 @@ export class ReportUiServer {
           if (info.isFile()) {
             const mim = mime.getType(path.parse(filename).ext);
             const content = await fs.readFile(filename);
-            res.writeHead(200, undefined, { "content-type": mim ?? "", "content-length": content.byteLength });
+            res.writeHead(200, { "content-type": mim ?? "", "content-length": content.byteLength });
             res.write(content);
             res.end();
             return;
