@@ -1,6 +1,6 @@
 {
   "name": "@eavid/vitest-tool",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "",
   "type": "module",
   "scripts": {
@@ -38,5 +38,8 @@
   "dependencies": {
     "mime": "^4.0.1",
     "tinybench": "^2.6.0"
+  },
+  "imports": {
+    "#root/*": "./*"
   }
 }

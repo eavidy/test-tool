@@ -5,13 +5,15 @@
     "target": "ES2022",
     "lib": ["ESNext"],
     "outDir": "dist",
-    "rootDir": "src",
     "strict": true,
     "skipDefaultLibCheck": true,
     "noEmit": true,
-    "baseUrl": "."
+    "baseUrl": ".",
+    "allowJs": true,
+    "paths": {
+      "#root/*": ["./*"]
+    }
   },
 
-  "exclude": ["node_modules", "src/bench_ui/assets"],
-  "include": ["src"]
+  "exclude": ["node_modules", "src/bench_ui/assets", "dist/**"]
 }

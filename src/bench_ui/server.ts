@@ -1,11 +1,9 @@
 import { Server } from "node:http";
 import fs from "node:fs/promises";
 import { Buffer } from "node:buffer";
-import { fileURLToPath } from "node:url";
 import path from "node:path";
 import mime from "mime";
-const filename = fileURLToPath(import.meta.url);
-const pkgRoot = path.resolve(filename, "../../..");
+import { pkgRoot } from "#root/package.js";
 const assetsDir = path.resolve(pkgRoot, "dist/bench_ui/assets");
 
 export class ReportUiServer {

@@ -1,5 +1,5 @@
 import { bench, describe } from "vitest";
-import { lineSuite } from "../src/vitest_tool";
+import { lineSuite } from "../src/vitest_tool.js";
 lineSuite("xxx", [10, 30], function (ms) {
   bench("aa", async function () {
     await time(ms);

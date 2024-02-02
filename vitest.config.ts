@@ -1,6 +1,6 @@
 import { defineConfig } from "vitest/config";
 
-import { EChartsBenchmarkReporter } from "./src/reporter";
+import { EChartsBenchmarkReporter } from "./src/reporter.js";
 
 export default defineConfig({
   test: {
