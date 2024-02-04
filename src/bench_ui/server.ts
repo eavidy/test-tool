@@ -3,7 +3,7 @@ import fs from "node:fs/promises";
 import { Buffer } from "node:buffer";
 import path from "node:path";
 import mime from "mime";
-import { pkgRoot } from "#root/package.js";
+import { pkgRoot } from "../base/package.js";
 const assetsDir = path.resolve(pkgRoot, "dist/bench_ui/assets");
 
 export class ReportUiServer {

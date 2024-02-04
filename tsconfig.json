@@ -9,10 +9,7 @@
     "skipDefaultLibCheck": true,
     "noEmit": true,
     "baseUrl": ".",
-    "allowJs": true,
-    "paths": {
-      "#root/*": ["./*"]
-    }
+    "allowJs": true
   },
 
   "exclude": ["node_modules", "src/bench_ui/assets", "dist/**"]

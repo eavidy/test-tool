@@ -1,5 +1,6 @@
 import { rollup } from "rollup";
 import tsPlugin from "@rollup/plugin-typescript";
+import path from "node:path";
 const output = "dist";
 
 const { write } = await rollup({
@@ -13,8 +14,8 @@ const { write } = await rollup({
         module: "nodenext",
         declaration: true,
         declarationDir: "dist",
+        rootDir: "./src",
       },
-      include: ["./src/**", "./*.js"],
     }),
   ],
 
@@ -26,4 +27,10 @@ const { write } = await rollup({
 });
 
 console.log("rollup to " + output);
-await write({ dir: output, chunkFileNames: "[name].js" });
+await write({
+  dir: output,
+  chunkFileNames: "[name].js",
+  manualChunks(id, meta) {
+    if (id === path.resolve("src/base/package.ts")) return "package";
+  },
+});
