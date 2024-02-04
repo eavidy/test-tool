@@ -7,12 +7,13 @@ export type CompareItem = {
 };
 export function SpeedCompare(props: {
   source: DataSetItem[];
+  rmeDataSet: DataSetItem[];
   chartType?: "line" | "bar";
   dimensions: string[];
   title: string;
   yName?: string;
 }) {
-  const { source, dimensions, title, chartType = "bar", yName } = props;
+  const { source, dimensions, title, chartType = "bar", yName, rmeDataSet = [] } = props;
   const [base, setBase] = useState<string | undefined>();
 
   const ref = useRef<ECharts>(null);
@@ -35,16 +36,19 @@ export function SpeedCompare(props: {
       series: dimensions.slice(1).map((name) => {
         return {
           label: {
-            show: base ? name !== base : false,
+            show: true,
             formatter: (p: any) => {
+              const i = p.dataIndex;
               const seriesName = p.seriesName;
-              if (!seriesName || !base) return "unknown";
-              const dataSetItem = source[p.dataIndex];
-              let baseValue = dataSetItem[base] as number;
-              let curentValue = dataSetItem[seriesName] as number;
-              let speed = baseValue / curentValue;
+              if (!seriesName) return "unknown";
+              const mean = source[i];
 
-              return speed.toFixed(2) + ` X`;
+              let label = "";
+              if (base) label += mul(mean[seriesName] as number, mean[base] as number);
+
+              const rme = rmeDataSet[i]?.[seriesName] as number;
+              if (rme) label += ` (±${rme.toFixed(2)} %)`;
+              return label;
             },
             position: "top",
           },
@@ -52,7 +56,7 @@ export function SpeedCompare(props: {
         };
       }),
     };
-  }, [source, dimensions, base]);
+  }, [source, dimensions, rmeDataSet, base]);
   useEffect(() => {
     ref.current!.on("click", (e) => {
       const name = e.seriesName;
@@ -66,5 +70,7 @@ export function SpeedCompare(props: {
     </div>
   );
 }
-
+function mul(value: number, base: number) {
+  return (base / value).toFixed(2) + ` X`;
+}
 export type DataSetItem = { [key: string]: number | string };

@@ -6,22 +6,25 @@ import { ReportUiServer } from "../bench.js";
 interface TargetData {
   testName: string;
   mean: number;
+  rme: number;
 }
 
 function genTargetData(task: Task): TargetData | null {
   const benchmark = task.result?.benchmark;
   if (task.type !== "custom" || !benchmark) return null;
-  return { mean: benchmark.mean, testName: task.name };
+  return { mean: benchmark.mean, testName: task.name, rme: benchmark.rme };
 }
-function genGroupData(suite: Suite, nameKey: string, dimensions: Set<string>): DataSetItem {
-  const series: DataSetItem = { [nameKey]: suite.name };
+function genGroupData(suite: Suite, nameKey: string, dimensions: Set<string>) {
+  const mean: DataSetItem = { [nameKey]: suite.name };
+  const rmeDataSet: DataSetItem = { [nameKey]: suite.name };
   for (const subTask of suite.tasks) {
     const data = genTargetData(subTask);
     if (!data) continue;
     dimensions.add(subTask.name);
-    series[data.testName] = data.mean;
+    mean[data.testName] = data.mean;
+    rmeDataSet[data.testName] = data.rme;
   }
-  return series;
+  return { mean, rme: rmeDataSet };
 }
 
 const prefix = "\0chart\0-";
@@ -78,13 +81,16 @@ export class EChartsBenchmarkReporter implements Reporter {
     const groupNameKey = "groupName";
     dimensions.add(groupNameKey);
     const source: DataSetItem[] = [];
+    const rmeList: DataSetItem[] = [];
 
     const directSuite: DataSetItem = { [groupNameKey]: name };
     let directlyNested = 0;
 
     for (const task of suite.tasks) {
       if (task.type === "suite") {
-        source.push(genGroupData(task, groupNameKey, dimensions));
+        const { mean, rme } = genGroupData(task, groupNameKey, dimensions);
+        source.push(mean);
+        rmeList.push(rme);
       } else if (task.type === "custom") {
         const data = genTargetData(task);
         if (!data) continue;
@@ -94,6 +100,6 @@ export class EChartsBenchmarkReporter implements Reporter {
       }
     }
     if (directlyNested) source.push(directSuite);
-    return { dimensions: Array.from(dimensions), source, title: name };
+    return { dimensions: Array.from(dimensions), source, title: name, rmeDataSet: rmeList };
   }
 }

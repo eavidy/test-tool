@@ -6,11 +6,13 @@
         "dimensions": ["groupName", "JBOD", "JSON"],
         "source": [
           { "groupName": "number:8", "JBOD": 5.4887565141138825, "JSON": 0.3279315414585051 },
-          { "groupName": "number:-12345567", "JBOD": 5.091416166286276, "JSON": 0.6343001291930147 },
-          { "groupName": "number_0x1fffff", "JBOD": 5.247335414091746, "JSON": 0.517369080354164 },
           { "groupName": "double", "JBOD": 5.400094611670381, "JSON": 1.9503926089765498 },
-          { "groupName": "boolean/null/undefined", "JBOD": 0.9199408128419343, "JSON": 0.24570702744936182 },
           { "groupName": "string", "JBOD": 1.4457664730920956, "JSON": 0.13424762524214368 }
+        ],
+        "rmeDataSet": [
+          { "JBOD": 5.4887565141138825, "JSON": 0.3279315414585051 },
+          { "JBOD": 5.400094611670381, "JSON": 1.9503926089765498 },
+          { "JBOD": 1.4457664730920956, "JSON": 0.13424762524214368 }
         ],
         "title": "JBOD.binaryify:JSON.stringify (Array)"
       },

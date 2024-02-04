@@ -6,6 +6,8 @@ export type BenchmarkDataSet = {
   dimensions: string[];
   source: DataSetItem[];
   chartType?: ChartType;
+  /** 误差 */
+  rmeDataSet: DataSetItem[];
 };
 export type DataSetItem = { [key: string]: number | string };
 
