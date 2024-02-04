@@ -1,8 +1,8 @@
-import { hrtimeNow, Bench, Options, TaskResult } from "tinybench";
+import { Bench, Options, TaskResult } from "tinybench";
 import type { BenchmarkDataSet, DataSetItem, ReportJSON, ChartType } from "../reporter/type.js";
 import { ReportUiServer } from "./server.js";
 export * from "tinybench";
-let benchInstance: LineBench | undefined;
+let benchInstance: BenchSeries | undefined;
 export function bench(name: string, fn: Fn) {
   if (!benchInstance) return;
   benchInstance!.add(name, fn);
@@ -23,13 +23,45 @@ interface CustomBench {
   groupName: string;
   chartType?: ChartType;
 }
-class LineBench extends Bench {
+export class BenchSeries extends Bench {
   constructor(readonly customMeta: CustomBench, opts?: Options) {
     super(opts);
   }
 }
+export function genBenchDataSet(
+  benchList: BenchSeries[],
+  opts: { title?: string; yName?: string; chartType?: ChartType } = {}
+): BenchmarkDataSet {
+  const gName = "groupName";
+  const res: BenchmarkDataSet = {
+    yName: opts.yName,
+    title: opts.title ?? "Title",
+    chartType: opts.chartType ?? "bar",
+    rmeDataSet: [],
+    dimensions: [gName],
+    source: [],
+  };
+  const bench0 = benchList[0];
+  if (!bench0) return res;
+  for (const { name } of bench0.tasks) {
+    res.dimensions.push(name);
+  }
+
+  for (const { customMeta, tasks } of benchList) {
+    let source: DataSetItem = { [gName]: customMeta.groupName };
+    let moeItem: DataSetItem = { [gName]: customMeta.groupName };
+    for (const { result, name } of tasks) {
+      if (!result) continue;
+      source[name] = result.mean;
+      moeItem[name] = result.rme;
+    }
+    res.source.push(source);
+    res.rmeDataSet.push(moeItem);
+  }
+  return res;
+}
 export class LineSuite<T> {
-  readonly benchList: LineBench[] = [];
+  readonly benchList: BenchSeries[] = [];
   private chartType: ChartType;
   constructor(
     readonly name: string,
@@ -43,7 +75,7 @@ export class LineSuite<T> {
     const { type = "line", group = String, ...benchOpts } = opts;
     this.chartType = type;
     for (let i = 0; i < data.length; i++) {
-      benchInstance = new LineBench({ groupName: group(data[i]) }, benchOpts);
+      benchInstance = new BenchSeries({ groupName: group(data[i]) }, benchOpts);
       this.benchList[i] = benchInstance;
       suite(data[i]);
       benchInstance = undefined;
@@ -54,36 +86,7 @@ export class LineSuite<T> {
       await item.warmup();
       await item.run();
     }
-    return this.genBenchDataSet(this, this.chartType, "ms");
-  }
-  private genBenchDataSet(benchList: LineSuite<any>, chartType: ChartType, yName?: string): BenchmarkDataSet {
-    const gName = "groupName";
-    const res: BenchmarkDataSet = {
-      yName,
-      title: benchList.name,
-      chartType,
-      rmeDataSet: [],
-      dimensions: [gName],
-      source: [],
-    };
-    const bench0 = benchList.benchList[0];
-    if (!bench0) return res;
-    for (const { name } of bench0.tasks) {
-      res.dimensions.push(name);
-    }
-
-    for (const { customMeta, tasks } of benchList.benchList) {
-      let source: DataSetItem = { [gName]: customMeta.groupName };
-      let moeItem: DataSetItem = { [gName]: customMeta.groupName };
-      for (const { result, name } of tasks) {
-        if (!result) continue;
-        source[name] = result.mean;
-        moeItem[name] = result.rme;
-      }
-      res.source.push(source);
-      res.rmeDataSet.push(moeItem);
-    }
-    return res;
+    return genBenchDataSet(this.benchList, { chartType: this.chartType, yName: "ms", title: this.name });
   }
 }
 type Fn = (...args: any[]) => any;
