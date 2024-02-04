@@ -58,7 +58,14 @@ export class LineSuite<T> {
   }
   private genBenchDataSet(benchList: LineSuite<any>, chartType: ChartType, yName?: string): BenchmarkDataSet {
     const gName = "groupName";
-    const res: BenchmarkDataSet = { yName, title: benchList.name, chartType, rmeDataSet: [], dimensions: [gName], source: [] };
+    const res: BenchmarkDataSet = {
+      yName,
+      title: benchList.name,
+      chartType,
+      rmeDataSet: [],
+      dimensions: [gName],
+      source: [],
+    };
     const bench0 = benchList.benchList[0];
     if (!bench0) return res;
     for (const { name } of bench0.tasks) {
@@ -67,13 +74,14 @@ export class LineSuite<T> {
 
     for (const { customMeta, tasks } of benchList.benchList) {
       let source: DataSetItem = { [gName]: customMeta.groupName };
-      let moeList: DataSetItem = { [gName]: customMeta.groupName };
+      let moeItem: DataSetItem = { [gName]: customMeta.groupName };
       for (const { result, name } of tasks) {
         if (!result) continue;
         source[name] = result.mean;
-        moeList[name] = result.rme;
+        moeItem[name] = result.rme;
       }
       res.source.push(source);
+      res.rmeDataSet.push(moeItem);
     }
     return res;
   }
